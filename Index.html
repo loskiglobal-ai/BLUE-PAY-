@@ -3,317 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BluePay Investment Platform - Africa</title>
+<title>BluePay Africa - Investment Platform</title>
 <style>
 :root {
-    --blue: #0b1ea8;
-    --dark: #081a8c;
-    --green: #2ecc71;
-    --orange: #e67e22;
-    --gold: #f1c40f;
-    --purple: #9b59b6;
+  --blue:#0b1ea8; --dark:#081a8c; --green:#2ecc71; --orange:#e67e22;
+  --gold:#f1c40f; --purple:#9b59b6; --white:#fff;
 }
-body {
-    margin:0; font-family:'Segoe UI',sans-serif;
-    background: var(--blue);
-    color:white;
-    overflow-x:hidden;
-    padding-bottom:120px;
-}
-.container { padding:20px; max-width:480px; margin:auto; }
-.card { background: rgba(0,0,0,0.4); padding:20px; margin:15px 0; border-radius:18px; border:1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-.hidden { display:none !important; }
-button { background: var(--green); color:white; font-size:16px; padding:14px; border:none; border-radius:10px; width:100%; cursor:pointer; font-weight:bold; margin-top:12px; }
-button:disabled { background:#555; opacity:0.6; cursor:not-allowed; }
-input, select { width:100%; padding:14px; margin-top:10px; border-radius:10px; border:none; box-sizing:border-box; color:#000; font-weight:bold; }
-header { background:var(--dark); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); }
-.header-title { font-weight:900; letter-spacing:2px; }
-.toast { position:fixed; top:-100px; left:50%; transform:translateX(-50%); background:white; color:#333; padding:12px 20px; border-radius:50px; font-size:13px; font-weight:bold; z-index:5000; box-shadow:0 10px 25px rgba(0,0,0,0.3); transition:0.8s; width:80%; max-width:300px; border-left:5px solid var(--green);}
-.toast.show { top:20px; }
-.overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:2999; }
-.floating-whatsapp { position:fixed; bottom:20px; right:20px; background:#25D366; color:white; border-radius:50%; width:60px; height:60px; display:flex; justify-content:center; align-items:center; font-size:30px; cursor:pointer; z-index:6000; }
-footer { text-align:center; font-size:12px; opacity:0.7; margin-top:30px; border-top:1px solid rgba(255,255,255,0.2); padding-top:15px; }
-.flex-row { display:flex; gap:10px; flex-wrap:wrap; }
-.flex-row button { flex:1; }
-.country-flag { width:25px; vertical-align:middle; margin-right:5px; }
+body {margin:0;font-family:Segoe UI, sans-serif;background:var(--blue);color:white;overflow-x:hidden;padding-bottom:120px;}
+.container {padding:20px;max-width:480px;margin:auto;}
+.card {background:rgba(0,0,0,0.4);padding:20px;margin:15px 0;border-radius:18px;border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);}
+.hidden {display:none!important;}
+button {background:var(--green);color:white;font-size:16px;padding:12px;border:none;border-radius:10px;width:100%;cursor:pointer;font-weight:bold;margin-top:10px;}
+button:disabled {background:#555!important;opacity:0.6;cursor:not-allowed;}
+.menu-button {flex:1 1 48%; padding:12px;margin:4px;font-size:15px;border-radius:12px;border:none;cursor:pointer;background:var(--dark);color:white;font-weight:bold;}
+.menu-button:hover {opacity:0.9;}
+input,select {width:100%;padding:12px;margin-top:8px;border-radius:10px;border:none;color:#000;font-weight:bold;box-sizing:border-box;}
+.header {display:flex;justify-content:space-between;align-items:center;padding:15px;background:var(--dark);border-bottom:1px solid rgba(255,255,255,0.1);}
+.header div {cursor:pointer;}
+.floating-whatsapp {position:fixed;bottom:20px;right:20px;background:#25d366;color:white;padding:12px 16px;border-radius:50px;font-size:22px;text-decoration:none;z-index:5000;}
+#withdrawToast {position:fixed;top:-100px;left:50%;transform:translateX(-50%);background:white;color:#333;padding:12px 20px;border-radius:50px;font-size:13px;font-weight:bold;z-index:5000;box-shadow:0 10px 25px rgba(0,0,0,0.3);transition:0.8s;width:80%;max-width:300px;border-left:5px solid var(--green);}
+#withdrawToast.show {top:20px;}
 </style>
 </head>
 <body>
 
-<div class="toast" id="withdrawToast">✅ <span id="toastText">...</span></div>
+<div id="withdrawToast">✅ <span id="toastText">...</span></div>
 
-<!-- LOGIN / REGISTER -->
-<div id="authSec">
-    <div class="container">
-        <h1 style="text-align:center; font-size:45px; margin:0;">BLUE PAY</h1>
-        <p style="text-align:center; color:var(--green); font-weight:bold;">[ $10,000 Welcome Bonus Active ]</p>
-        <div class="card">
-            <input type="text" id="regName" placeholder="Full Name">
-            <input type="email" id="regEmail" placeholder="Email Address">
-            <input type="tel" id="regPhone" placeholder="Phone Number">
-            <select id="regCountry">
-                <option value="">Select Your Country</option>
-            </select>
-            <input type="password" id="regPass" placeholder="Password">
-            <button onclick="registerUser()">Claim Bonus & Register</button>
-        </div>
-        <div class="flex-row">
-            <button onclick="openAdmin()">Admin Panel</button>
-            <button onclick="openWhatsApp()">WhatsApp Support</button>
-        </div>
-        <footer>BluePay International (PTY) LTD | Regulated & Licensed | All African Countries Supported</footer>
-    </div>
+<div id="loginPage" class="container">
+  <h1 style="text-align:center;font-size:45px;margin:0;">BLUE PAY</h1>
+  <p style="text-align:center;color:var(--green);font-weight:bold;">[ $10,000 Welcome Bonus Active ]</p>
+  <div class="card">
+    <input type="text" id="regName" placeholder="Full Name">
+    <input type="email" id="regEmail" placeholder="Email Address">
+    <input type="text" id="regPhone" placeholder="Phone Number">
+    <select id="regCountry"></select>
+    <button onclick="registerUser()">Claim Bonus & Register</button>
+  </div>
 </div>
 
-<!-- MAIN DASHBOARD -->
-<div id="dash" class="hidden">
-    <header>
-        <div onclick="toggleMenu()" style="font-size:20px; cursor:pointer;">☰ Menu</div>
-        <div class="header-title">BLUEPAY</div>
-        <div onclick="logout()" style="cursor:pointer;">Logout 🚪</div>
-    </header>
+<div id="dashboard" class="hidden">
+  <div class="header">
+    <div onclick="toggleMenu()">☰ Menu</div>
+    <div id="welcomeMsg"></div>
+    <div onclick="logout()">Logout 🚪</div>
+  </div>
 
-    <div class="container">
-        <h2 id="welcomeUser"></h2>
-        <div class="card" style="text-align:center; border:2px solid var(--green);">
-            <small>Available Balance</small>
-            <div style="font-size:38px; font-weight:900; color:var(--green);" id="userBal">$10,000</div>
-        </div>
+  <div id="menuButtons" class="container hidden" style="display:flex; flex-wrap:wrap; gap:5px;">
+    <button class="menu-button" onclick="showSection('investment')">💰 Investment Plans</button>
+    <button class="menu-button" onclick="showSection('deposit')">💳 Deposit</button>
+    <button class="menu-button" onclick="showSection('withdraw')">🏦 Withdraw</button>
+    <button class="menu-button" onclick="showSection('savings')">💾 Savings</button>
+    <button class="menu-button" onclick="showSection('transactions')">📜 Transactions</button>
+    <button class="menu-button" onclick="showSection('support')">🛠 Support Center</button>
+    <button class="menu-button" onclick="showSection('buyBPC')">🎫 Buy BPC Code</button>
+    <button class="menu-button" onclick="showSection('airtime')">📱 Buy Airtime</button>
+  </div>
 
-        <div class="flex-row">
-            <button onclick="openInvestment()">💹 Investment</button>
-            <button onclick="openSavings()">💰 Savings</button>
-            <button onclick="openDeposit()">📥 Deposit</button>
-            <button onclick="triggerAction('Withdraw')">💸 Withdraw Bonus</button>
-            <button onclick="openTransactions()">📜 Transactions</button>
-            <button onclick="triggerAction('BPC')">🎁 Buy BPC Code</button>
-        </div>
-
-        <div class="card">
-            <h3>Support Center</h3>
-            <button style="background:#444" onclick="showSupport('how')">How it works</button>
-            <button style="background:#444" onclick="showSupport('why')">Why choose us</button>
-            <button style="background:#444" onclick="showSupport('bpc')">How to buy BPC Code</button>
-            <div id="supportDisplay" class="hidden" style="margin-top:10px; padding:15px; background:rgba(255,255,255,0.1); border-left:4px solid var(--gold); font-size:14px;"></div>
-        </div>
-    </div>
+  <div class="container">
+    <!-- Sections -->
+    <div id="investment" class="card hidden"></div>
+    <div id="deposit" class="card hidden"></div>
+    <div id="withdraw" class="card hidden"></div>
+    <div id="savings" class="card hidden"></div>
+    <div id="transactions" class="card hidden"></div>
+    <div id="support" class="card hidden"></div>
+    <div id="buyBPC" class="card hidden"></div>
+    <div id="airtime" class="card hidden"></div>
+  </div>
 </div>
 
-<!-- MODALS -->
-<div id="modalOverlay" class="overlay hidden"></div>
-<div id="actionModal" class="hidden">
-    <h2 id="modalTitle" style="margin:0; color:var(--gold);">Action</h2>
-    
-    <div id="investmentModal" class="hidden">
-        <div class="card">
-            <h3>Investment Plans</h3>
-            <div class="flex-row">
-                <button onclick="depositInvestment('Basic',500)">Basic - Min $500 (5% daily)</button>
-                <button onclick="depositInvestment('Premium',100)">Premium - Min $100 (3% daily)</button>
-                <button onclick="depositInvestment('Gold',1000)">Gold - Min $1000 (7% daily)</button>
-            </div>
-            <p>Amount Invested: <span id="investedAmount">$0</span></p>
-            <button onclick="confirmInvestment()">Deposit Investment</button>
-        </div>
-    </div>
-
-    <div id="savingsModal" class="hidden">
-        <div class="card">
-            <h3>Savings</h3>
-            <p>Current Savings: <span id="savingsBal">$0</span></p>
-            <div class="flex-row">
-                <button onclick="depositSavings()">Deposit Savings</button>
-                <button onclick="withdrawSavings()">Withdraw Savings</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="depositModal" class="hidden">
-        <div class="card">
-            <h3>Deposit Funds</h3>
-            <div class="flex-row">
-                <button onclick="depositMethod('Mobile')">Mobile Money</button>
-                <button onclick="depositMethod('Card')">Card</button>
-                <button onclick="depositMethod('Crypto')">Crypto</button>
-            </div>
-            <div id="depositSteps" style="margin-top:10px;"></div>
-        </div>
-    </div>
-
-    <div id="bpcModal" class="hidden">
-        <div class="card">
-            <p>Price: <span id="bpcPrice">1050</span> (in your currency)</p>
-            <p>Upload proof of payment:</p>
-            <input type="file" id="bpcFile">
-            <button onclick="buyBPC()">Buy BPC</button>
-        </div>
-    </div>
-
-    <div id="withdrawModal" class="hidden">
-        <div class="card">
-            <h3>Withdraw Bonus</h3>
-            <input type="number" id="withdrawAmt" placeholder="Amount">
-            <select id="withdrawBank"></select>
-            <input type="password" id="bpcKeyWithdraw" placeholder="Enter BPC Verification Key">
-            <button onclick="confirmWithdraw()">Confirm Withdrawal</button>
-        </div>
-    </div>
-</div>
-
-<!-- TRANSACTION HISTORY -->
-<div id="transactionModal" class="hidden">
-    <div class="container">
-        <h3>Transaction History</h3>
-        <div id="transactionList" class="card" style="max-height:300px; overflow-y:auto;"></div>
-        <button onclick="closeTransaction()">Close</button>
-    </div>
-</div>
-
-<!-- WHATSAPP -->
-<div class="floating-whatsapp" onclick="openWhatsApp()">💬</div>
+<a class="floating-whatsapp" href="https://wa.me/447766494570" target="_blank">💬</a>
 
 <script>
-// USERS
-let user = JSON.parse(localStorage.getItem('bluepay_final')) || null;
-let transactions = JSON.parse(localStorage.getItem('bluepay_txn')) || [];
-let invested = 0;
-let savings = 0;
-
-// COUNTRIES + CURRENCY + FLAGS + BANKS (partial example, extend for all 54)
 const countries = [
-    {name:'Nigeria', currency:'₦', flag:'🇳🇬', banks:['Access Bank','GTBank','UBA','Zenith Bank'], mobile:'MTN Nigeria'},
-    {name:'South Africa', currency:'R', flag:'🇿🇦', banks:['FNB','Standard Bank','ABSA'], mobile:'MTN SA'},
-    {name:'Kenya', currency:'KES', flag:'🇰🇪', banks:['Equity Bank','KCB','Co-operative Bank'], mobile:'Safaricom'},
-    {name:'Egypt', currency:'E£', flag:'🇪🇬', banks:['CIB','Banque Misr','HSBC'], mobile:'Vodafone Egypt'},
-    // ... Add all 54 countries similarly
+  {name:"Nigeria", currency:"₦", banks:["Access Bank","GT Bank","Zenith Bank","UBA"]},
+  {name:"South Africa", currency:"R", banks:["FNB","Standard Bank","ABSA","Nedbank"]},
+  {name:"Kenya", currency:"KSh", banks:["Equity","KCB","Co-operative","NCBA"]},
+  {name:"Egypt", currency:"E£", banks:["CIB","Banque Misr","National Bank"]},
+  // ... Add remaining 50 African countries similarly
 ];
 
-const defaultBPCUSD = 1050;
-
-// Populate countries dropdown
-const regCountry = document.getElementById('regCountry');
-countries.forEach(c=>{
-    let opt = document.createElement('option');
-    opt.value = c.name;
-    opt.innerText = `${c.flag} ${c.name}`;
-    regCountry.appendChild(opt);
+const regCountry = document.getElementById("regCountry");
+countries.forEach(c => {
+  const opt = document.createElement("option"); opt.value = c.name; opt.text = `${c.name} ${c.flag||''}`; regCountry.add(opt);
 });
 
-// REGISTER
+let user=null;
+
 function registerUser(){
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const phone = document.getElementById('regPhone').value;
-    const countryName = document.getElementById('regCountry').value;
-    const pass = document.getElementById('regPass').value;
-    if(!name||!email||!phone||!countryName||!pass){alert('Please fill all fields'); return;}
-    const country = countries.find(c=>c.name===countryName);
-    user = {name,email,phone,country,balance:10000};
-    localStorage.setItem('bluepay_final',JSON.stringify(user));
-    startApp();
+  const name=document.getElementById("regName").value;
+  const email=document.getElementById("regEmail").value;
+  const phone=document.getElementById("regPhone").value;
+  const countryName=document.getElementById("regCountry").value;
+  if(!name||!email||!phone||!countryName) return alert("Fill all fields");
+  const country=countries.find(c=>c.name===countryName);
+  user={name,email,phone,country,balance:10000,savings:0,transactions:[]};
+  localStorage.setItem("bluepay_user",JSON.stringify(user));
+  startApp();
 }
 
-// START DASHBOARD
 function startApp(){
-    document.getElementById('authSec').classList.add('hidden');
-    document.getElementById('dash').classList.remove('hidden');
-    document.getElementById('userBal').innerText = `${user.country.currency} ${user.balance.toLocaleString()}`;
-    document.getElementById('welcomeUser').innerText = `Welcome ${user.name} to BluePay Investment Platform`;
-    updateBPCPrice();
-    runToasts();
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  document.getElementById("welcomeMsg").innerText=`Welcome ${user.name} to BluePay Investment Platform`;
+  showNotifications();
 }
 
-// LOGOUT
-function logout(){location.reload();}
+function logout(){localStorage.removeItem("bluepay_user");location.reload();}
 
-// TOASTS
-function runToasts(){
-    const names = ["Mpho","Kabelo","Neo","Lerato","Thabo"];
-    setInterval(()=>{
-        const n = names[Math.floor(Math.random()*names.length)];
-        const a = Math.floor(Math.random()*5+1)*500;
-        document.getElementById('toastText').innerText = `${n} just withdrew ${user.country.currency}${a.toLocaleString()}`;
-        document.getElementById('withdrawToast').classList.add('show');
-        setTimeout(()=>document.getElementById('withdrawToast').classList.remove('show'),4000);
-    },15000);
+function toggleMenu(){document.getElementById("menuButtons").classList.toggle("hidden");}
+
+function showSection(id){
+  ["investment","deposit","withdraw","savings","transactions","support","buyBPC","airtime"].forEach(s=>document.getElementById(s).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  renderSection(id);
 }
 
-// ADMIN
-function openAdmin(){alert('Admin Panel Login (placeholder)');}
-
-// WHATSAPP
-function openWhatsApp(){window.open('https://wa.me/447766494570');}
-
-// MENU
-function toggleMenu(){alert('Menu:\nInvestment Plans\nSavings\nDeposit\nWithdraw Bonus\nTransactions\nBuy BPC Code');}
-
-// SUPPORT
-function showSupport(type){
-    const d = document.getElementById('supportDisplay');
-    d.classList.remove('hidden');
-    if(type==='how') d.innerHTML = "<b>Step 1:</b> Register for $10,000 bonus.<br><b>Step 2:</b> Choose investment plan and deposit.<br><b>Step 3:</b> Withdraw funds to your local bank/mobile money.";
-    if(type==='why') d.innerHTML = "We are Africa's #1 investment bonus platform. Fully regulated, secure, serving millions of users across 54 countries.";
-    if(type==='bpc') d.innerHTML = "Click 'Buy BPC Code'. Follow payment instructions (Mobile/Crypto/Card) and upload proof. Admin will verify and send code via SMS/Email.";
+function renderSection(id){
+  if(id==="investment"){
+    const sec=document.getElementById("investment");
+    sec.innerHTML=`<h3>💰 Investment Plans</h3>
+      <p>Basic: $500 min - 5% daily</p>
+      <p>Premium: $100 min - 3% daily</p>
+      <p>Gold: $1000 min - 8% daily</p>
+      <input type="number" id="investAmount" placeholder="Amount to invest">
+      <button onclick="depositInvestment()">📈 Deposit Investment</button>`;
+  }
+  if(id==="deposit"){
+    const sec=document.getElementById("deposit");
+    sec.innerHTML=`<h3>💳 Deposit Funds</h3>
+      <p>Available Methods: Card, Crypto (Binance/TRC20), Mobile Money</p>
+      <p>Mobile Money (Kenya Safaricom): +254724940251</p>
+      <button onclick="alert('Deposit Procedure Shown')">Show Instructions</button>`;
+  }
+  if(id==="withdraw"){
+    const sec=document.getElementById("withdraw");
+    sec.innerHTML=`<h3>🏦 Withdraw Funds</h3>
+      <b>Balance:</b> ${user.country.currency}${user.balance}<br>
+      <input type="number" id="withdrawAmount" placeholder="Amount to withdraw">
+      <select>${user.country.banks.map(b=>`<option>${b}</option>`).join('')}</select>
+      <input type="password" id="bpcKey" placeholder="Enter BPC Code">
+      <button onclick="withdrawBonus()">💸 Withdraw</button>`;
+  }
+  if(id==="savings"){
+    const sec=document.getElementById("savings");
+    sec.innerHTML=`<h3>💾 Savings</h3>
+      <b>Balance:</b> ${user.country.currency}${user.savings}<br>
+      <button onclick="depositSavings()">➕ Deposit Savings</button>
+      <button onclick="withdrawSavings()">➖ Withdraw Savings</button>`;
+  }
+  if(id==="transactions"){
+    const sec=document.getElementById("transactions");
+    sec.innerHTML=`<h3>📜 Transaction History</h3>
+      ${user.transactions.length?user.transactions.map(t=>`<p>${t}</p>`).join(''):"No transactions yet"}`;
+  }
+  if(id==="support"){
+    const sec=document.getElementById("support");
+    sec.innerHTML=`<h3>🛠 Support Center</h3>
+      <p>How it works: Register -> Buy BPC -> Withdraw</p>
+      <p>Why choose us: Fully regulated, secure, 10M+ users</p>
+      <p>How to buy BPC Code: Click 'Buy BPC', follow payment, upload proof</p>`;
+  }
+  if(id==="buyBPC"){
+    const sec=document.getElementById("buyBPC");
+    sec.innerHTML=`<h3>🎫 Buy BPC Code</h3>
+      <p>Price: ${user.country.currency} 1050</p>
+      <p>Payment Methods: Card | Crypto | Mobile Money</p>
+      <button onclick="alert('BPC Purchase Submitted')">✅ Buy BPC</button>`;
+  }
+  if(id==="airtime"){
+    const sec=document.getElementById("airtime");
+    sec.innerHTML=`<h3>📱 Buy Airtime</h3>
+      <input type="text" placeholder="Phone number">
+      <input type="number" placeholder="Amount">
+      <button onclick="alert('Airtime Purchase Submitted')">💸 Buy Airtime</button>`;
+  }
 }
 
-// BPC PRICE
-function updateBPCPrice(){
-    const usdRate = 1; // placeholder for dynamic conversion
-    const localCurrency = user.country.currency;
-    document.getElementById('bpcPrice').innerText = `${localCurrency} ${(defaultBPCUSD*usdRate).toLocaleString()}`;
+// Sample functions
+function depositInvestment(){alert('Investment deposited!');}
+function depositSavings(){alert('Savings deposited!');}
+function withdrawSavings(){alert('Savings withdrawn!');}
+function withdrawBonus(){alert('Withdrawal submitted for verification!');}
+function showNotifications(){
+  setInterval(()=>{
+    const names=["Mpho","Kabelo","Neo","Lerato","Thabo"];
+    const n=names[Math.floor(Math.random()*names.length)];
+    const amt=(Math.floor(Math.random()*5)+1)*500;
+    document.getElementById("toastText").innerText=`${n} just withdrew ${user.country.currency}${amt}`;
+    document.getElementById("withdrawToast").classList.add("show");
+    setTimeout(()=>document.getElementById("withdrawToast").classList.remove("show"),4000);
+  },15000);
 }
 
-// INVESTMENT
-function openInvestment(){
-    hideAllModals();
-    document.getElementById('investmentModal').classList.remove('hidden');
-}
-function depositInvestment(plan,amt){
-    invested = amt;
-    document.getElementById('investedAmount').innerText = `${user.country.currency} ${invested.toLocaleString()}`;
-}
-function confirmInvestment(){alert('Investment deposited. Admin will verify.'); hideAllModals();}
-
-// SAVINGS
-function openSavings(){
-    hideAllModals();
-    document.getElementById('savingsModal').classList.remove('hidden');
-}
-function depositSavings(){savings+=100; document.getElementById('savingsBal').innerText=`${user.country.currency} ${savings}`;}
-function withdrawSavings(){savings-=50; document.getElementById('savingsBal').innerText=`${user.country.currency} ${savings}`;}
-
-// DEPOSIT
-function openDeposit(){hideAllModals(); document.getElementById('depositModal').classList.remove('hidden');}
-function depositMethod(type){
-    let steps = '';
-    if(type==='Mobile') steps = `Use your mobile money (${user.country.mobile}) to transfer to Safaricom +254724940251 or equivalent in your country.`;
-    if(type==='Card') steps = 'Use your debit/credit card to deposit directly.';
-    if(type==='Crypto') steps = 'Use Binance/TRC20/ID to deposit. Binance ID: 860603099, TRC20: TPfoEwLhjW3pBokNSem1oTVEp26mNSvfPR';
-    document.getElementById('depositSteps').innerText = steps;
-}
-
-// WITHDRAW BONUS
-function triggerAction(type){
-    hideAllModals();
-    if(type==='Withdraw') document.getElementById('withdrawModal').classList.remove('hidden');
-    if(type==='BPC') document.getElementById('bpcModal').classList.remove('hidden');
-}
-function confirmWithdraw(){alert('Withdrawal request submitted for verification'); hideAllModals();}
-
-// BUY BPC
-function buyBPC(){alert('BPC purchase submitted for verification'); hideAllModals();}
-
-// TRANSACTIONS
-function openTransactions(){document.getElementById('transactionModal').classList.remove('hidden'); document.getElementById('transactionList').innerHTML = transactions.map(t=>`<p>${t}</p>`).join('');}
-function closeTransaction(){document.getElementById('transactionModal').classList.add('hidden');}
-
-// HIDE MODALS
-function hideAllModals(){
-    document.querySelectorAll('#investmentModal, #savingsModal, #depositModal, #bpcModal, #withdrawModal').forEach(el=>el.classList.add('hidden'));
-}
-
-// AUTO START IF USER LOGGED IN
-if(user) startApp();
+// Load saved user
+const saved=JSON.parse(localStorage.getItem("bluepay_user"));
+if(saved){user=saved;startApp();}
 </script>
 </body>
 </html>
